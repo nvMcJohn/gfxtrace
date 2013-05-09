@@ -1,0 +1,88 @@
+
+What is GfxTrace?
+=================
+
+GfxTrace is an open source trace-capture-and-replay tool. It is designed to be trivially extendible
+and is open sourced to allow any developer to quickly extend the tool to support their particular 
+application.
+
+
+Supported Platforms 
+===================
+
+Although GfxTrace is designed to easily support any platform where OpenGL (or OpenGL ES) is 
+available, it currently only supports Windows. This should change as time and resources permit.
+
+
+Building
+========
+
+To build GfxTrace, you will need:
+
+- Visual Studio 2010 (or later)
+- Python 2.7 (or later)
+
+1) Open the solution file gfxTrace.sln
+2) Select debug or release
+3) Build
+
+
+Capturing a Trace
+=================
+
+To capture a trace, you will need to inject inception.dll into your process. This is most trivially 
+achieved using the provided eztrace.exe (built during the previous step).
+
+With eztrace.exe you simply run:
+
+	eztrace.exe -p <full path to your executable> -w <working directory for your executable> \
+		<arguments to your executable>
+
+You then press the capture key (by default F11) to capture a single frame trace. The application 
+will pause briefly while capturing the trace, then should resume. 
+
+To see more arguments to eztrace (for example to specify where to write the trace file or to 
+specify a different hotkey to capture a trace), run eztrace.exe without additional arguments.
+
+
+Replaying a Trace
+=================
+
+A trace can be replayed with the provided glReplayer.exe tool:
+
+	glReplayer.exe <path to trace file>
+
+Similarly, traces can be explored (this is very early, currently only supports viewing texture 
+objects) by running:
+
+	glExplorer.exe <path to trace file>
+
+
+Extending GfxTrace
+==================
+
+The bulk of GfxTrace is generated through a pair of python files:
+	common/codegen/functionhooks.py    # Contains list of functions to generate, along with markup
+	common/codegen/codegen.py          # Contains code to actually generate our generated C source 
+	                                   # files
+
+To extend GfxTrace, you simply add an entry point to 
+functionhooks.Hooks.GlobalState.ContextState. For example, the C entry point for glScissor looks 
+like this:
+
+WINGDIAPI void APIENTRY glScissor (GLint x, GLint y, GLsizei width, GLsizei height);
+
+In ContextState, there is a python definition that looks like this:
+	def glScissor(GLint_x, GLint_y, GLsizei_width, GLsizei_height): pass
+
+This causes code to be spit out in several places, specifically:
+- Function hooking / recording / forwarding
+- Command replay
+- State accumulation
+
+Please note that this section of GfxTrace is massively in flux right now--the current design 
+requires most "interesting" entry points to perform manual_state recording, and that's annoying. 
+I'm moving to a design that should largely eliminate manual state recording--and should largely
+be auto-generated from the official spec files. Stay tuned for more details.
+
+That's about it!

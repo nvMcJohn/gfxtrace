@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{ede852d7-a3ea-491f-9569-8047743d6e62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codegen Source">
+      <UniqueIdentifier>{f822b8ce-f3ef-40a8-b250-1fb94aa3280a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codegen Source\gl">
+      <UniqueIdentifier>{0ebda5e3-68cf-4d4b-9c18-d2a631981d2c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="codegen\codegen.py">
+      <Filter>Codegen Source</Filter>
+    </None>
+    <None Include="extensions.gl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="codegen\gl\apiobjects.py">
+      <Filter>Codegen Source\gl</Filter>
+    </None>
+    <None Include="codegen\gl\entrypoint.py">
+      <Filter>Codegen Source\gl</Filter>
+    </None>
+    <None Include="codegen\gl\spec.py">
+      <Filter>Codegen Source\gl</Filter>
+    </None>
+    <None Include="codegen\gl\__init__.py">
+      <Filter>Codegen Source\gl</Filter>
+    </None>
+    <None Include="codegen\gl\codegen.py">
+      <Filter>Codegen Source\gl</Filter>
+    </None>
+    <None Include="codegen\gl\entrypoints.py">
+      <Filter>Codegen Source\gl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="interconnect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="functionhooks.gen.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="functionhooks.manual.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filelike.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gltrace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extensions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gltexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tracelog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glprogram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="options.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glfbo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="interconnect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="functionhooks.manual.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="functionhooks.gen.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filelike.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gltrace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="extensions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gltexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tracelog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glprogram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="options.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glfbo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="codegen\functionhooks.py">
+      <Filter>Codegen Source</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

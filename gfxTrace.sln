@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eztrace", "eztrace\eztrace.vcxproj", "{DCD2B8B5-3434-434E-A29A-E4283F1850C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0F0D6241-4872-4781-A2F3-519EA090ADE9} = {0F0D6241-4872-4781-A2F3-519EA090ADE9}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "common\common.vcxproj", "{0F0D6241-4872-4781-A2F3-519EA090ADE9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "inception", "inception\inception.vcxproj", "{F5E5E586-8036-4805-B0CC-49B69FEE9620}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0F0D6241-4872-4781-A2F3-519EA090ADE9} = {0F0D6241-4872-4781-A2F3-519EA090ADE9}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glExplorer", "glExplorer\glExplorer.vcxproj", "{A0D98FDE-4A3C-4406-9A77-DCFD8F5045BA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glReplayer", "glReplayer\glReplayer.vcxproj", "{4EFB41A5-7369-4E03-BEF9-2721E03A2D8B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mhook", "thirdparty\mhook\mhook.vcxproj", "{6958E382-7F2F-4A58-BD92-3F9F77016268}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DCD2B8B5-3434-434E-A29A-E4283F1850C1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DCD2B8B5-3434-434E-A29A-E4283F1850C1}.Debug|Win32.Build.0 = Debug|Win32
+		{DCD2B8B5-3434-434E-A29A-E4283F1850C1}.Release|Win32.ActiveCfg = Release|Win32
+		{DCD2B8B5-3434-434E-A29A-E4283F1850C1}.Release|Win32.Build.0 = Release|Win32
+		{0F0D6241-4872-4781-A2F3-519EA090ADE9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0F0D6241-4872-4781-A2F3-519EA090ADE9}.Debug|Win32.Build.0 = Debug|Win32
+		{0F0D6241-4872-4781-A2F3-519EA090ADE9}.Release|Win32.ActiveCfg = Release|Win32
+		{0F0D6241-4872-4781-A2F3-519EA090ADE9}.Release|Win32.Build.0 = Release|Win32
+		{F5E5E586-8036-4805-B0CC-49B69FEE9620}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F5E5E586-8036-4805-B0CC-49B69FEE9620}.Debug|Win32.Build.0 = Debug|Win32
+		{F5E5E586-8036-4805-B0CC-49B69FEE9620}.Release|Win32.ActiveCfg = Release|Win32
+		{F5E5E586-8036-4805-B0CC-49B69FEE9620}.Release|Win32.Build.0 = Release|Win32
+		{A0D98FDE-4A3C-4406-9A77-DCFD8F5045BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A0D98FDE-4A3C-4406-9A77-DCFD8F5045BA}.Debug|Win32.Build.0 = Debug|Win32
+		{A0D98FDE-4A3C-4406-9A77-DCFD8F5045BA}.Release|Win32.ActiveCfg = Release|Win32
+		{A0D98FDE-4A3C-4406-9A77-DCFD8F5045BA}.Release|Win32.Build.0 = Release|Win32
+		{4EFB41A5-7369-4E03-BEF9-2721E03A2D8B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4EFB41A5-7369-4E03-BEF9-2721E03A2D8B}.Debug|Win32.Build.0 = Debug|Win32
+		{4EFB41A5-7369-4E03-BEF9-2721E03A2D8B}.Release|Win32.ActiveCfg = Release|Win32
+		{4EFB41A5-7369-4E03-BEF9-2721E03A2D8B}.Release|Win32.Build.0 = Release|Win32
+		{6958E382-7F2F-4A58-BD92-3F9F77016268}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6958E382-7F2F-4A58-BD92-3F9F77016268}.Debug|Win32.Build.0 = Debug|Win32
+		{6958E382-7F2F-4A58-BD92-3F9F77016268}.Release|Win32.ActiveCfg = Release|Win32
+		{6958E382-7F2F-4A58-BD92-3F9F77016268}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
