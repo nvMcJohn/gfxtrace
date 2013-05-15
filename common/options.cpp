@@ -34,15 +34,67 @@ Options* gOptions = NULL;
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
+void PrintHelp()
+{
+
+}
+
+// ------------------------------------------------------------------------------------------------
+int ParseInto(int _curArgNum, int _argsNeeded, int _argCount, TCHAR* _argv[], TCHAR** _dest)
+{
+    if (_curArgNum + _argsNeeded >= _argCount) {
+        _tprintf(TC("ERROR: Not enough parameters for argument \"%s\"\n"), _argv[_curArgNum]);
+        return 0;
+    }
+
+    assert(_argsNeeded == 1);
+    SafeFree(*_dest);
+    (*_dest) = MallocAndCopy(_argv[_curArgNum + _argsNeeded], (1 + _tcslen(_argv[_curArgNum + _argsNeeded])) * sizeof(TCHAR));
+    return 2;
+}
+
+// ------------------------------------------------------------------------------------------------
+int ParseRemainingArgsInto(int _curArgNum, int _argCount, TCHAR* _argv[], TCHAR* _exeName, TCHAR** _dest)
+{
+    SafeFree(*_dest);
+
+    size_t allocSize = _tcslen(_exeName);
+    for (int i = _curArgNum; i < _argCount; ++i) {
+        allocSize += _tcslen(_argv[i]);
+    }
+
+    // Add room for spaces between, and the null terminator at the end
+    allocSize += _argCount - _curArgNum + 1;
+
+    (*_dest) = (TCHAR*)malloc(allocSize * sizeof(TCHAR));
+
+    int dstChar = 0;
+    while (((*_dest)[dstChar++] = (*_exeName++)) != TC('\0')) { }
+    if (_curArgNum < _argCount) {
+        (*_dest)[dstChar - 1] = TC(' ');
+    }
+
+    for (int i = _curArgNum; i < _argCount; ++i) {
+        int srcChar = 0;
+        
+        while (((*_dest)[dstChar++] = (_argv[i][srcChar++])) != TC('\0')) { }
+        if (i + 1 < _argCount) {
+            (*_dest)[dstChar - 1] = TC(' ');
+        }
+    }
+
+    return _argCount - _curArgNum;
+}
+
+// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 Options::Options()
 {
 	memset(this, 0, sizeof(*this));
 
 	// Set defaults.
-	strcpy_s(OutputTraceName, "D:\\tf2.glt");
-	_tcscpy_s(ExeName, TC("D:\\p4\\valvesoftware\\console\\ValveGames\\game\\hl2.exe"));
-	_tcscpy_s(ProcessArgs, TC("D:\\p4\\valvesoftware\\console\\ValveGames\\game\\hl2.exe -game tf -sw -dev -w 1280 -h 720"));
-	_tcscpy_s(WorkingDirectory, TC("D:\\p4\\valvesoftware\\console\\ValveGames\\game"));
+	OutputTraceName = _tcsdup(TC("trace.gft"));
 	
 #ifdef _DEBUG
 	GetFullPathNameA("..\\Debug\\inception.dll", ARRAYSIZE(InceptionDllPath), InceptionDllPath, NULL);
@@ -57,11 +109,83 @@ Options::Options()
 }
 
 // ------------------------------------------------------------------------------------------------
+Options::~Options()
+{
+	SafeFree(OutputTraceName);
+	SafeFree(ExeName);
+	SafeFree(WorkingDirectory);
+	SafeFree(ProcessArgs);
+}
+
+// ------------------------------------------------------------------------------------------------
 Options* ParseCommandLine(int argc, TCHAR *argv[])
 {
-	Options* retVal = new Options;
+    if (argc == 1) {
+        PrintHelp();
+        exit(1);
+    }
 
-	// TODO: Parse options.
+	Options* retVal = new Options;
+    int eztraceArgsEnd = 0;
+    
+    for (int i = 1; i < argc; ) {
+        int consumed = 0;
+        
+        TCHAR* curArg = argv[i];
+
+        if (_tcscmp(TC("-p"), curArg) == 0) {
+            consumed += ParseInto(i, 1, argc, argv, &(retVal->ExeName));
+        } else if (_tcscmp(TC("-w"), curArg) == 0) {
+            consumed += ParseInto(i, 1, argc, argv, &(retVal->WorkingDirectory));
+        } else if (_tcscmp(TC("-o"), curArg) == 0) {
+            consumed += ParseInto(i, 1, argc, argv, &(retVal->OutputTraceName));
+        } else if (_tcscmp(TC("-h"), curArg) == 0) {
+            PrintHelp();
+            exit(0);
+        } else {
+            if (_tcscmp(TC("--"), curArg) == 0) {
+                eztraceArgsEnd = i + 1;
+            } else {
+                eztraceArgsEnd = i;
+            }
+            break;
+        }
+
+        if (consumed == 0) {
+            PrintHelp();
+            exit(2);
+        }
+        i += consumed;
+    }
+
+    ParseRemainingArgsInto(eztraceArgsEnd, argc, argv, retVal->ExeName, &(retVal->ProcessArgs));
+
+    bool validArgs = true;
+    if (retVal->ExeName == NULL) {
+        _tprintf(TC("ERROR: Missing required parameter -p\n"));
+        validArgs = false;
+    } else {
+        if (retVal->WorkingDirectory == NULL) {
+            _tprintf(TC("INFO: No working directory specified, assuming executable's path.\n"));
+            TCHAR* pathSepBack = _tcsrchr(retVal->ExeName, TC('\\'));
+            TCHAR* pathSepFor = _tcsrchr(retVal->ExeName, TC('/'));
+
+            TCHAR* lastPathSep = pathSepBack > pathSepFor ? pathSepBack : pathSepFor;
+            if (lastPathSep == NULL) {
+                // If we couldn't find a path separator, we're in current directory.
+                retVal->WorkingDirectory = _tcsdup(TC(".\\"));
+            } else {
+                retVal->WorkingDirectory = MallocAndCopy(retVal->ExeName, (2 + (lastPathSep - retVal->ExeName)) * sizeof(TCHAR));
+                retVal->WorkingDirectory[lastPathSep - retVal->ExeName + 1] = TC('\0');
+            }
+        }
+    }
+    _tprintf(TC("INFO: Args to be passed to child process: '%s'\n"), retVal->ProcessArgs ? retVal->ProcessArgs : TC("(none)"));
+
+    if (validArgs == false) {
+        PrintHelp();
+        exit(3);
+    }
 
 	return retVal;
 }

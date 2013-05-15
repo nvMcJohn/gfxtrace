@@ -41,8 +41,10 @@ extern bool gFirstMakeCurrent;
 void AttachDetours()
 {
 	// If you need to debug startup, build with this set to true, then attach and change it to false.
-	bool debugStartup = true;
+#ifdef _DEBUG
+	bool debugStartup = false;
 	while (debugStartup) ;
+#endif
 
 	Generated_AttachStaticHooks();
 }

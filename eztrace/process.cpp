@@ -64,7 +64,7 @@ DWORD WINAPI Process_RunCaptureTraceThread(LPVOID _processPtr)
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-Process::Process(const TCHAR* _exeName, const TCHAR* _processArgs, const TCHAR* _workingDirectory, const char* _inceptionDllPath, GLTrace* _outTrace, const char* _outTraceFilename)
+Process::Process(const TCHAR* _exeName, const TCHAR* _processArgs, const TCHAR* _workingDirectory, const char* _inceptionDllPath, GLTrace* _outTrace, const TCHAR* _outTraceFilename)
 : mOutputTrace(_outTrace)
 , mExeName(NULL)
 , mProcessArgs(NULL)
@@ -235,7 +235,7 @@ void Process::Thread_CaptureTrace()
 		fileLikeSocket.Read(Checkpoint("TraceCapturingEnd"));
 
 		// TODO: get from command line options.
-		printf("Saving capture to %s...\n", mOutputTraceName);
+		_tprintf(TC("Saving capture to %s...\n"), mOutputTraceName);
 		mOutputTrace->Save(mOutputTraceName);
 
 		printf("Frame successfully transfered.\n");

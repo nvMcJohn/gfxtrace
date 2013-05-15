@@ -33,10 +33,10 @@
 // ------------------------------------------------------------------------------------------------
 struct Options
 {
-	char OutputTraceName[_MAX_PATH];
-	TCHAR ExeName[_MAX_PATH];
-	TCHAR ProcessArgs[_MAX_PATH];
-	TCHAR WorkingDirectory[_MAX_PATH];
+	TCHAR* OutputTraceName;
+	TCHAR* ExeName;
+	TCHAR* WorkingDirectory;
+	TCHAR* ProcessArgs;
 
 	// For some reason this needs to be char, not TCHAR. 
 	char InceptionDllPath[_MAX_PATH];
@@ -53,6 +53,7 @@ struct Options
 	bool FixBadFlushBufferRangeArgs;
 
 	Options();
+    ~Options();
 };
 
 extern Options* gOptions;

@@ -55,8 +55,8 @@ public:
 	void ReadContextState(FileLike* _from);
 	void RecvGLCommand(const SSerializeDataPacket& _pkt);
 
-	void Save(const char* _filename);
-	static GLTrace* Load(const char* _filename);
+	void Save(const TCHAR* _filename);
+	static GLTrace* Load(const TCHAR* _filename);
 
 	void CreateResources();
 	void RestoreContextState();

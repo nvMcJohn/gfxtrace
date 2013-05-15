@@ -34,7 +34,7 @@ struct Options;
 class Process
 {
 public:
-	Process(const TCHAR* _exeName, const TCHAR* _processArgs, const TCHAR* _workingDirectory, const char* _inceptionDllPath, GLTrace* _outTrace, const char* _outTraceFilename);
+	Process(const TCHAR* _exeName, const TCHAR* _processArgs, const TCHAR* _workingDirectory, const char* _inceptionDllPath, GLTrace* _outTrace, const TCHAR* _outTraceFilename);
 	~Process();
 
 	void RunWatchdogThread();
@@ -49,7 +49,7 @@ private:
 	char* mInceptionDllPath;
 	DWORD mParentThreadId;
 
-	char* mOutputTraceName;
+	TCHAR* mOutputTraceName;
 
 	volatile bool mServerRequestsTermination;
 

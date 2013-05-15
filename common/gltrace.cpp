@@ -88,10 +88,10 @@ void GLTrace::RecvGLCommand(const SSerializeDataPacket& _pkt)
 }
 
 // ------------------------------------------------------------------------------------------------
-void GLTrace::Save(const char* _filename)
+void GLTrace::Save(const TCHAR* _filename)
 {
 	FILE* wfp = 0;
-	if (fopen_s(&wfp, _filename, "wb") != 0) {
+	if (_tfopen_s(&wfp, _filename, TC("wb")) != 0) {
 		throw 10;
 	}
 	assert(wfp);
@@ -113,10 +113,10 @@ void GLTrace::Save(const char* _filename)
 }
 
 // ------------------------------------------------------------------------------------------------
-GLTrace* GLTrace::Load(const char* _filename)
+GLTrace* GLTrace::Load(const TCHAR* _filename)
 {
 	FILE* rfp = 0;
-	if (fopen_s(&rfp, _filename, "rb") != 0) {
+	if (_tfopen_s(&rfp, _filename, TC("rb")) != 0) {
 		throw 10;
 	}
 	assert(rfp);
