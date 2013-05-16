@@ -139,7 +139,7 @@ inline size_t elementsToIndexCount(GLenum mode, GLsizei count)
 		break;
 	default:
 		assert(!"impl");
-		Once(TraceError("Error in elementsToIndexCount, couldn't convert mode='%d', count='%d' to elements.", mode, count));
+		Once(TraceError(TC("Error in elementsToIndexCount, couldn't convert mode='%d', count='%d' to elements."), mode, count));
 	}
 
 	return startupIndices + (count - 1) * perElementCost;
@@ -174,7 +174,7 @@ inline size_t GLenumToSize(GLenum type)
 		return 4;
 	default:
 		assert(!"impl");
-		Once(TraceError("Don't know how to convert type='%d' to bytes.", type));
+		Once(TraceError(TC("Don't know how to convert type='%d' to bytes."), type));
 	}
 
 	return 0;
@@ -219,7 +219,7 @@ size_t GLenumToParameterCount(GLenum pname)
 		return 4;
 	case GL_COMPRESSED_TEXTURE_FORMATS: 
 		assert(!"impl - todo"); // GL_NUM_COMPRESSED_TEXTURE_FORMATS
-		Once(TraceError("GLenumToParameterCount needs implementation for pname==GL_COMPRESSED_TEXTURE_FORMATS."));
+		Once(TraceError(TC("GLenumToParameterCount needs implementation for pname==GL_COMPRESSED_TEXTURE_FORMATS.")));
 		return 0;
 	case GL_CULL_FACE: 
 		return 1;
@@ -391,7 +391,7 @@ size_t GLenumToParameterCount(GLenum pname)
 
 	default:
 		assert(!"impl");
-		Once(TraceError("GLenumToParameterCount needs implementation for pname='%d'.", pname));
+		Once(TraceError(TC("GLenumToParameterCount needs implementation for pname='%d'."), pname));
 		return 0;
 	};
 
@@ -457,7 +457,7 @@ size_t formatAndTypeToSizePerPixel(GLenum _format, GLenum _type)
 		case GL_BITMAP: 
 		default:
 			assert(!"Don't know how to deal with this type parameter.");
-			Once(TraceError("formatAndTypeToSizePerPixel - Don't know how to deal with type='%d'", _type)); 
+			Once(TraceError(TC("formatAndTypeToSizePerPixel - Don't know how to deal with type='%d'"), _type)); 
 			break;
 	};
 
@@ -492,7 +492,7 @@ size_t formatAndTypeToSizePerPixel(GLenum _format, GLenum _type)
 			// Don't know what to do with these, need to ask.
 		default:
 			assert(!"Unimplemented glTexImage1D format");
-			Once(TraceError("formatAndTypeToSizePerPixel - Don't know how to deal with format='%d'", _format)); 
+			Once(TraceError(TC("formatAndTypeToSizePerPixel - Don't know how to deal with format='%d'"), _format)); 
 	};
 
 	return srcBytesPerComponent * srcComponents;
@@ -588,8 +588,8 @@ size_t determineTexImageBufferSize(GLsizei _widthPixels, GLsizei _heightPixels, 
 {
 	if (_widthPixels == 0 || _heightPixels == 0 || _depthPixels == 0) {
 		assert(0);
-		Once(TraceError("determineTexImageBufferSize called with wonky parameters--could be valid, please check."));
-		Once(TraceError("determineTexImageBufferSize(_widthPixels=%d, _heightPixels=%d, _depthPixels=%d, _format=%d, _type=%d, _unpackAlignment=%d, _unpackRowLength=%d, _unpackImageHeight=%d, _unpackSkipPixels=%d, _unpackSkipRows=%d, _unpackSkipImages=%d)", 
+		Once(TraceError(TC("determineTexImageBufferSize called with wonky parameters--could be valid, please check.")));
+		Once(TraceError(TC("determineTexImageBufferSize(_widthPixels=%d, _heightPixels=%d, _depthPixels=%d, _format=%d, _type=%d, _unpackAlignment=%d, _unpackRowLength=%d, _unpackImageHeight=%d, _unpackSkipPixels=%d, _unpackSkipRows=%d, _unpackSkipImages=%d)"), 
 					    _widthPixels, _heightPixels, _depthPixels, _format, _type, _unpackAlignment, _unpackRowLength, _unpackImageHeight, _unpackSkipPixels, _unpackSkipRows, _unpackSkipImages));
 		return 0;
 	}
@@ -626,7 +626,7 @@ size_t determineTexImageBufferSize(GLsizei _widthPixels, GLsizei _heightPixels, 
 size_t determinePointerLength_glBitmap_bitmap(const ContextState* _ctxState, GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLfloat xmove, GLfloat ymove, const GLubyte* bitmap)
 {
 	assert(!"impl");
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glBitmap_bitmap")); 
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glBitmap_bitmap"))); 
 
 	return 0;
 }
@@ -653,7 +653,7 @@ size_t determinePointerLength_glColorPointer_pointer(const ContextState* _ctxSta
 	const auto& bufferBindings = _ctxState->GetBufferBindings();
 	auto it = bufferBindings.find(GL_ARRAY_BUFFER);
 	if (it == bufferBindings.end() || it->second == NULL) {
-		Once(TraceError("Capture is using glColorPointer with client memory pointers--this is not yet implemented. Trace replay probably corrupted."));
+		Once(TraceError(TC("Capture is using glColorPointer with client memory pointers--this is not yet implemented. Trace replay probably corrupted.")));
 		return 0;
 	}
 
@@ -688,7 +688,7 @@ size_t determinePointerLength_glDrawPixels_pixels(const ContextState* _ctxState,
 	if (!pixels)
 		return 0;
 	assert(!"lolimpl");
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glDrawPixels_pixels")); 
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glDrawPixels_pixels"))); 
 	return 0;
 }
 
@@ -698,7 +698,7 @@ size_t determinePointerLength_glDrawRangeElements_indices(const ContextState* _c
 	const auto& bufferBindings = _ctxState->GetBufferBindings();
 	auto it = bufferBindings.find(GL_ELEMENT_ARRAY_BUFFER);
 	if (it == bufferBindings.end() || it->second == NULL) {
-		Once(TraceError("Capture is using glDrawRangeElements with client memory pointers--this is not yet implemented. Trace replay probably corrupted."));
+		Once(TraceError(TC("Capture is using glDrawRangeElements with client memory pointers--this is not yet implemented. Trace replay probably corrupted.")));
 		return 0;
 	}
 
@@ -712,7 +712,7 @@ size_t determinePointerLength_glDrawRangeElementsBaseVertex_indices(const Contex
 	const auto& bufferBindings = _ctxState->GetBufferBindings();
 	auto it = bufferBindings.find(GL_ELEMENT_ARRAY_BUFFER);
 	if (it == bufferBindings.end() || it->second == NULL) {
-		Once(TraceError("Capture is using glDrawRangeElementsBaseVertex with client memory pointers--this is not yet implemented. Trace replay probably corrupted."));
+		Once(TraceError(TC("Capture is using glDrawRangeElementsBaseVertex with client memory pointers--this is not yet implemented. Trace replay probably corrupted.")));
 		return 0;
 	}
 
@@ -726,7 +726,7 @@ size_t determinePointerLength_glEdgeFlagPointer_pointer(const ContextState* _ctx
 	const auto& bufferBindings = _ctxState->GetBufferBindings();
 	auto it = bufferBindings.find(GL_ARRAY_BUFFER);
 	if (it == bufferBindings.end() || it->second == NULL) {
-		Once(TraceError("Capture is using glEdgeFlagPointer with client memory pointers--this is not yet implemented. Trace replay probably corrupted."));
+		Once(TraceError(TC("Capture is using glEdgeFlagPointer with client memory pointers--this is not yet implemented. Trace replay probably corrupted.")));
 		return 0;
 	}
 
@@ -738,7 +738,7 @@ size_t determinePointerLength_glEdgeFlagPointer_pointer(const ContextState* _ctx
 size_t determinePointerLength_glFeedbackBuffer_buffer(const ContextState* _ctxState, GLsizei size, GLenum type, GLfloat* buffer)
 {
 	assert(!"feedback buffers are totally not implemented.");
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glFeedbackBuffer_buffer"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glFeedbackBuffer_buffer")));
 	return 0;
 }
 
@@ -752,7 +752,7 @@ size_t determinePointerLength_glGetClipPlane_equation(const ContextState* _ctxSt
 size_t determinePointerLength_glGetMapdv_v(const ContextState* _ctxState, GLenum target, GLenum query, GLdouble* v)
 {
 	assert(!"glGetMapdv - impl");
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetMapdv_v"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetMapdv_v")));
 	return 0;
 }
 
@@ -760,7 +760,7 @@ size_t determinePointerLength_glGetMapdv_v(const ContextState* _ctxState, GLenum
 size_t determinePointerLength_glGetMapfv_v(const ContextState* _ctxState, GLenum target, GLenum query, GLfloat* v)
 {
 	assert(!"glGetMapdv - impl");
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetMapfv_v"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetMapfv_v")));
 	return 0;
 }
 
@@ -768,7 +768,7 @@ size_t determinePointerLength_glGetMapfv_v(const ContextState* _ctxState, GLenum
 size_t determinePointerLength_glGetMapiv_v(const ContextState* _ctxState, GLenum target, GLenum query, GLint* v)
 {
 	assert(!"glGetMapiv - impl");
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetMapiv_v"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetMapiv_v")));
 	return 0;
 }
 
@@ -776,7 +776,7 @@ size_t determinePointerLength_glGetMapiv_v(const ContextState* _ctxState, GLenum
 size_t determinePointerLength_glGetPixelMapfv_values(const ContextState* _ctxState, GLenum map, GLfloat* values)
 {
 	assert(!"glGetPixelMap - impl");
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetPixelMapfv_values"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetPixelMapfv_values")));
 	return 0;
 }
 
@@ -784,7 +784,7 @@ size_t determinePointerLength_glGetPixelMapfv_values(const ContextState* _ctxSta
 size_t determinePointerLength_glGetPixelMapuiv_values(const ContextState* _ctxState, GLenum map, GLuint* values)
 {
 	assert(!"glGetPixelMap - impl");
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetPixelMapuiv_values"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetPixelMapuiv_values")));
 	return 0;
 }
 
@@ -792,7 +792,7 @@ size_t determinePointerLength_glGetPixelMapuiv_values(const ContextState* _ctxSt
 size_t determinePointerLength_glGetPixelMapusv_values(const ContextState* _ctxState, GLenum map, GLushort* values)
 {
 	assert(!"glGetPixelMap - impl");
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetPixelMapusv_values"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetPixelMapusv_values")));
 	return 0;
 }
 
@@ -801,14 +801,14 @@ size_t determinePointerLength_glGetPointerv_params(const ContextState* _ctxState
 {
 	// Errr, this isn't right.
 	assert(!"glGetPointerv - impl");
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented (well).", "determinePointerLength_glGetPointerv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented (well)."), TC("determinePointerLength_glGetPointerv_params")));
 	return sizeof(GLvoid*);
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetPolygonStipple_mask(const ContextState* _ctxState, GLubyte* mask)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetPolygonStipple_mask"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetPolygonStipple_mask")));
 	return 0;
 }
 
@@ -827,70 +827,70 @@ size_t determinePointerLength_glGetProgramiv_params(const ContextState* _ctxStat
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetTexEnvfv_params(const ContextState* _ctxState, GLenum target, GLenum pname, GLfloat* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetTexEnvfv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetTexEnvfv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetTexEnviv_params(const ContextState* _ctxState, GLenum target, GLenum pname, GLint* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetTexEnviv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetTexEnviv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetTexGendv_params(const ContextState* _ctxState, GLenum coord, GLenum pname, GLdouble* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetTexGendv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetTexGendv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetTexGenfv_params(const ContextState* _ctxState, GLenum coord, GLenum pname, GLfloat* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetTexGenfv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetTexGenfv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetTexGeniv_params(const ContextState* _ctxState, GLenum coord, GLenum pname, GLint* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetTexGeniv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetTexGeniv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetTexImage_pixels(const ContextState* _ctxState, GLenum target, GLint level, GLenum format, GLenum type, GLvoid* pixels)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetTexImage_pixels"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetTexImage_pixels")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetTexLevelParameterfv_params(const ContextState* _ctxState, GLenum target, GLint level, GLenum pname, GLfloat* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetTexLevelParameterfv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetTexLevelParameterfv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetTexLevelParameteriv_params(const ContextState* _ctxState, GLenum target, GLint level, GLenum pname, GLint* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetTexLevelParameteriv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetTexLevelParameteriv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetTexParameterfv_params(const ContextState* _ctxState, GLenum target, GLenum pname, GLfloat* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetTexParameterfv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetTexParameterfv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetTexParameteriv_params(const ContextState* _ctxState, GLenum target, GLenum pname, GLint* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetTexParameteriv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetTexParameteriv_params")));
 	return 0;
 }
 
@@ -903,105 +903,105 @@ size_t determinePointerLength_glGetUniformLocation_name(const ContextState* _ctx
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glInterleavedArrays_pointer(const ContextState* _ctxState, GLenum format, GLsizei stride, const GLvoid* pointer)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glInterleavedArrays_pointer"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glInterleavedArrays_pointer")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glLightModelfv_params(const ContextState* _ctxState, GLenum pname, const GLfloat* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glLightModelfv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glLightModelfv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glLightModeliv_params(const ContextState* _ctxState, GLenum pname, const GLint* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glLightModeliv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glLightModeliv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glLightfv_params(const ContextState* _ctxState, GLenum light, GLenum pname, const GLfloat* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glLightfv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glLightfv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glLightiv_params(const ContextState* _ctxState, GLenum light, GLenum pname, const GLint* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glLightiv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glLightiv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glMap1d_points(const ContextState* _ctxState, GLenum target, GLdouble u1, GLdouble u2, GLint stride, GLint order, const GLdouble* points)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glMap1d_points"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glMap1d_points")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glMap1f_points(const ContextState* _ctxState, GLenum target, GLfloat u1, GLfloat u2, GLint stride, GLint order, const GLfloat* points)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glMap1f_points"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glMap1f_points")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glMap2d_points(const ContextState* _ctxState, GLenum target, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, const GLdouble* points)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glMap2d_points"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glMap2d_points")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glMap2f_points(const ContextState* _ctxState, GLenum target, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder, GLfloat v1, GLfloat v2, GLint vstride, GLint vorder, const GLfloat* points)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glMap2f_points"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glMap2f_points")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glMaterialfv_params(const ContextState* _ctxState, GLenum face, GLenum pname, const GLfloat* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glMaterialfv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glMaterialfv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glMaterialiv_params(const ContextState* _ctxState, GLenum face, GLenum pname, const GLint* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glMaterialiv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glMaterialiv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glPixelMapfv_values(const ContextState* _ctxState, GLenum map, GLsizei mapsize, const GLfloat* values)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glPixelMapfv_values"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glPixelMapfv_values")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glPixelMapuiv_values(const ContextState* _ctxState, GLenum map, GLsizei mapsize, const GLuint* values)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glPixelMapuiv_values"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glPixelMapuiv_values")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glPixelMapusv_values(const ContextState* _ctxState, GLenum map, GLsizei mapsize, const GLushort* values)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glPixelMapusv_values"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glPixelMapusv_values")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glPolygonStipple_mask(const ContextState* _ctxState, const GLubyte* mask)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glPolygonStipple_mask"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glPolygonStipple_mask")));
 	return 0;
 }
 
@@ -1014,7 +1014,7 @@ size_t determinePointerLength_glProgramEnvParameters4fvEXT_params(const ContextS
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glReadPixels_pixels(const ContextState* _ctxState, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* pixels)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glReadPixels_pixels"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glReadPixels_pixels")));
 	return 0;
 }
 
@@ -1040,7 +1040,7 @@ size_t determinePointerLength_glSamplerParameterfv_params(const ContextState* _c
 
 	default:
 		assert(0);
-		Once(TraceError("Frame called glSamplerParameter with pname==%d, but don't know argument size for that--update glTrace", pname));
+		Once(TraceError(TC("Frame called glSamplerParameter with pname==%d, but don't know argument size for that--update glTrace"), pname));
 	};
 
 	return 0;
@@ -1084,7 +1084,7 @@ size_t determinePointerLength_glTexCoordPointer_pointer(const ContextState* _ctx
 	const auto& bufferBindings = _ctxState->GetBufferBindings();
 	auto it = bufferBindings.find(GL_ARRAY_BUFFER);
 	if (it == bufferBindings.end() || it->second == NULL) {
-		Once(TraceError("Capture is using glTexCoordPointer with client memory pointers--this is not yet implemented. Trace replay probably corrupted."));
+		Once(TraceError(TC("Capture is using glTexCoordPointer with client memory pointers--this is not yet implemented. Trace replay probably corrupted.")));
 		return 0;
 	}
 
@@ -1095,35 +1095,35 @@ size_t determinePointerLength_glTexCoordPointer_pointer(const ContextState* _ctx
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glTexEnvfv_params(const ContextState* _ctxState, GLenum target, GLenum pname, const GLfloat* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glTexEnvfv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glTexEnvfv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glTexEnviv_params(const ContextState* _ctxState, GLenum target, GLenum pname, const GLint* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glTexEnviv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glTexEnviv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glTexGendv_params(const ContextState* _ctxState, GLenum coord, GLenum pname, const GLdouble* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glTexGendv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glTexGendv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glTexGenfv_params(const ContextState* _ctxState, GLenum coord, GLenum pname, const GLfloat* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glTexGenfv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glTexGenfv_params")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glTexGeniv_params(const ContextState* _ctxState, GLenum coord, GLenum pname, const GLint* params)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glTexGeniv_params"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glTexGeniv_params")));
 	return 0;
 }
 
@@ -1179,7 +1179,7 @@ size_t determinePointerLength_glTexParameterfv_params(const ContextState* _ctxSt
 		return 4 * sizeof(GLfloat);
 	default:
 		assert(!"impl");
-		Once(TraceError("Frame called '%s' with pname='%d', which isn't implemented. Please implement.", "determinePointerLength_glTexParameterfv_params", pname));
+		Once(TraceError(TC("Frame called '%s' with pname='%d', which isn't implemented. Please implement."), TC("determinePointerLength_glTexParameterfv_params"), pname));
 
 		break;
 	};
@@ -1248,7 +1248,7 @@ size_t determinePointerLength_glVertexAttribPointer_pointer(const ContextState* 
 	const auto& bufferBindings = _ctxState->GetBufferBindings();
 	auto it = bufferBindings.find(GL_ARRAY_BUFFER);
 	if (it == bufferBindings.end() || it->second == NULL) {
-		Once(TraceError("Capture is using glVertexAttribPointer with client memory pointers--this is not yet implemented. Trace replay probably corrupted."));
+		Once(TraceError(TC("Capture is using glVertexAttribPointer with client memory pointers--this is not yet implemented. Trace replay probably corrupted.")));
 		return 0;
 	}
 
@@ -1262,7 +1262,7 @@ size_t determinePointerLength_glVertexPointer_pointer(const ContextState* _ctxSt
 	const auto& bufferBindings = _ctxState->GetBufferBindings();
 	auto it = bufferBindings.find(GL_ARRAY_BUFFER);
 	if (it == bufferBindings.end() || it->second == NULL) {
-		Once(TraceError("Capture is using glVertexPointer with client memory pointers--this is not yet implemented. Trace replay probably corrupted."));
+		Once(TraceError(TC("Capture is using glVertexPointer with client memory pointers--this is not yet implemented. Trace replay probably corrupted.")));
 		return 0;
 	}
 
@@ -1315,49 +1315,49 @@ size_t determinePointerLength_glBufferSubData_data(const ContextState* _ctxState
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glCompressedTexImage2D_h(const ContextState* _ctxState, GLenum a, GLint b, GLenum c, GLsizei d, GLsizei e, GLint f, GLsizei g, const GLvoid* h)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glCompressedTexImage2D_h"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glCompressedTexImage2D_h")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glCompressedTexImage3D_i(const ContextState* _ctxState, GLenum a, GLint b, GLenum c, GLsizei d, GLsizei e, GLsizei f, GLint g, GLsizei h, const GLvoid* i)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glCompressedTexImage3D_i"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glCompressedTexImage3D_i")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glDrawRangeElements_f(const ContextState* _ctxState, GLenum a, GLuint b, GLuint c, GLsizei d, GLenum e, const GLvoid* f)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glDrawRangeElements_f"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glDrawRangeElements_f")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetBooleanIndexedvEXT_c(const ContextState* _ctxState, GLenum a, GLuint b, GLboolean* c)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetBooleanIndexedvEXT_c"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetBooleanIndexedvEXT_c")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetCompressedTexImage_c(const ContextState* _ctxState, GLenum a, GLint b, GLvoid* c)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetCompressedTexImage_c"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetCompressedTexImage_c")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetObjectParameterivARB_c(const ContextState* _ctxState, GLhandleARB a, GLenum b, GLint* c)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetObjectParameterivARB_c"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetObjectParameterivARB_c")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetProgramivARB_c(const ContextState* _ctxState, GLenum a, GLenum b, GLint* c)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetProgramivARB_c"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetProgramivARB_c")));
 	return 0;
 }
 
@@ -1376,21 +1376,21 @@ size_t determinePointerLength_glGetQueryObjectuivARB_params(const ContextState* 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetSynciv_d(const ContextState* _ctxState, GLsync a, GLenum b, GLsizei c, GLsizei* d, GLint* e)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetSynciv_d"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetSynciv_d")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetSynciv_e(const ContextState* _ctxState, GLsync a, GLenum b, GLsizei c, GLsizei* d, GLint* e)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetSynciv_e"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetSynciv_e")));
 	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glGetTexParameterPointervAPPLE_c(const ContextState* _ctxState, GLenum a, GLenum b, void* c)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glGetTexParameterPointervAPPLE_c"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glGetTexParameterPointervAPPLE_c")));
 	return 0;
 }
 
@@ -1428,7 +1428,7 @@ size_t determinePointerLength_glTexImage3D_data(const ContextState* _ctxState, G
 // ------------------------------------------------------------------------------------------------
 size_t determinePointerLength_glTextureRangeAPPLE_c(const ContextState* _ctxState, GLenum a, GLsizei b, void* c)
 {
-	Once(TraceError("Frame tried to call '%s', which is currently not implemented.", "determinePointerLength_glTextureRangeAPPLE_c"));
+	Once(TraceError(TC("Frame tried to call '%s', which is currently not implemented."), TC("determinePointerLength_glTextureRangeAPPLE_c")));
 	return 0;
 }
 
@@ -2184,7 +2184,7 @@ void ContextState::glBufferData(GLenum target, GLsizeiptrARB size, const GLvoid*
 
 	auto buffIt = mData_BufferObjects.find(bindIt->second);
 	if (buffIt == mData_BufferObjects.end() || buffIt->second == NULL) {
-		TraceError("glTrace Internal error with buffer (id: %d) bound at (target: %d)", buffIt->first, target);
+		TraceError(TC("glTrace Internal error with buffer (id: %d) bound at (target: %d)"), buffIt->first, target);
 		assert(0);
 	}
 
@@ -2212,7 +2212,7 @@ void ContextState::glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr si
 
 	auto buffIt = mData_BufferObjects.find(bindIt->second);
 	if (buffIt == mData_BufferObjects.end() || buffIt->second == NULL) {
-		TraceError("glTrace Internal error with buffer (id: %d) bound at (target: %d)", buffIt->first, target);
+		TraceError(TC("glTrace Internal error with buffer (id: %d) bound at (target: %d)"), buffIt->first, target);
 		assert(0);
 	}
 
@@ -2477,7 +2477,7 @@ void ContextState::glFlushMappedBufferRange(GLenum target, GLintptr offset, GLsi
 
 	auto buffIt = mData_BufferObjects.find(bindIt->second);
 	if (buffIt == mData_BufferObjects.end() || buffIt->second == NULL) {
-		TraceError("glTrace Internal error with buffer (id: %d) bound at (target: %d)", buffIt->first, target);
+		TraceError(TC("glTrace Internal error with buffer (id: %d) bound at (target: %d)"), buffIt->first, target);
 		assert(0);
 	}
 
@@ -2615,7 +2615,7 @@ GLint ContextState::glGetUniformLocation(GLint _retVal, GLuint program, const GL
 	auto progIt = mData_ProgramObjectsGLSL.find(program);
 	if (progIt == mData_ProgramObjectsGLSL.end() || progIt->second == NULL) {
 		if (_retVal != -1) {
-			Once(TraceError("glGetUniformLocation is returning a valid location, but we cannot find the bound program--trace replay is bad."));
+			Once(TraceError(TC("glGetUniformLocation is returning a valid location, but we cannot find the bound program--trace replay is bad.")));
 		}
 		return _retVal;
 	}
@@ -2646,7 +2646,7 @@ GLvoid* ContextState::glMapBufferARB(GLvoid* _retVal, GLenum target, GLenum acce
 
 	auto buffIt = mData_BufferObjects.find(bindIt->second);
 	if (buffIt == mData_BufferObjects.end() || buffIt->second == NULL) {
-		TraceError("glTrace Internal error with buffer (id: %d) bound at (target: %d)", buffIt->first, target);
+		TraceError(TC("glTrace Internal error with buffer (id: %d) bound at (target: %d)"), buffIt->first, target);
 		assert(0);
 	}
 
@@ -2664,7 +2664,7 @@ GLvoid* ContextState::glMapBufferRange(GLvoid* _retVal, GLenum target, GLintptr 
 
 	auto buffIt = mData_BufferObjects.find(bindIt->second);
 	if (buffIt == mData_BufferObjects.end() || buffIt->second == NULL) {
-		TraceError("glTrace Internal error with buffer (id: %d) bound at (target: %d)", buffIt->first, target);
+		TraceError(TC("glTrace Internal error with buffer (id: %d) bound at (target: %d)"), buffIt->first, target);
 		assert(0);
 	}
 
@@ -2801,7 +2801,7 @@ GLboolean ContextState::glUnmapBuffer(GLboolean _retVal, GLenum target)
 
 	auto buffIt = mData_BufferObjects.find(bindIt->second);
 	if (buffIt == mData_BufferObjects.end() || buffIt->second == NULL) {
-		TraceError("glTrace Internal error with buffer (id: %d) bound at (target: %d)", buffIt->first, target);
+		TraceError(TC("glTrace Internal error with buffer (id: %d) bound at (target: %d)"), buffIt->first, target);
 		assert(0);
 	}
 

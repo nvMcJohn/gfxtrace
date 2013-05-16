@@ -43,13 +43,13 @@ void PrintHelp()
 int ParseInto(int _curArgNum, int _argsNeeded, int _argCount, TCHAR* _argv[], TCHAR** _dest)
 {
     if (_curArgNum + _argsNeeded >= _argCount) {
-        _tprintf(TC("ERROR: Not enough parameters for argument \"%s\"\n"), _argv[_curArgNum]);
+        LogError(TC("Not enough parameters for argument \"%s\""), _argv[_curArgNum]);
         return 0;
     }
 
     assert(_argsNeeded == 1);
     SafeFree(*_dest);
-    (*_dest) = MallocAndCopy(_argv[_curArgNum + _argsNeeded], (1 + _tcslen(_argv[_curArgNum + _argsNeeded])) * sizeof(TCHAR));
+    (*_dest) = AllocateAndCopy(_argv[_curArgNum + _argsNeeded]);
     return 2;
 }
 
@@ -111,10 +111,10 @@ Options::Options()
 // ------------------------------------------------------------------------------------------------
 Options::~Options()
 {
-	SafeFree(OutputTraceName);
-	SafeFree(ExeName);
-	SafeFree(WorkingDirectory);
-	SafeFree(ProcessArgs);
+	SafeDeleteArray(OutputTraceName);
+	SafeDeleteArray(ExeName);
+	SafeDeleteArray(WorkingDirectory);
+	SafeDeleteArray(ProcessArgs);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -162,11 +162,11 @@ Options* ParseCommandLine(int argc, TCHAR *argv[])
 
     bool validArgs = true;
     if (retVal->ExeName == NULL) {
-        _tprintf(TC("ERROR: Missing required parameter -p\n"));
+        LogError(TC("Missing required parameter -p"));
         validArgs = false;
     } else {
         if (retVal->WorkingDirectory == NULL) {
-            _tprintf(TC("INFO: No working directory specified, assuming executable's path.\n"));
+            LogInfo(TC("No working directory specified, assuming executable's path."));
             TCHAR* pathSepBack = _tcsrchr(retVal->ExeName, TC('\\'));
             TCHAR* pathSepFor = _tcsrchr(retVal->ExeName, TC('/'));
 
@@ -175,12 +175,11 @@ Options* ParseCommandLine(int argc, TCHAR *argv[])
                 // If we couldn't find a path separator, we're in current directory.
                 retVal->WorkingDirectory = _tcsdup(TC(".\\"));
             } else {
-                retVal->WorkingDirectory = MallocAndCopy(retVal->ExeName, (2 + (lastPathSep - retVal->ExeName)) * sizeof(TCHAR));
-                retVal->WorkingDirectory[lastPathSep - retVal->ExeName + 1] = TC('\0');
+                retVal->WorkingDirectory = AllocateAndCopyN(retVal->ExeName, lastPathSep - retVal->ExeName);
             }
         }
     }
-    _tprintf(TC("INFO: Args to be passed to child process: '%s'\n"), retVal->ProcessArgs ? retVal->ProcessArgs : TC("(none)"));
+    LogInfo(TC("Args to be passed to child process: '%s'"), retVal->ProcessArgs);
 
     if (validArgs == false) {
         PrintHelp();

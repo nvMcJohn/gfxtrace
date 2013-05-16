@@ -178,7 +178,7 @@ void GLBuffer::glFlushMappedBufferRange(GLenum target, GLintptr offset, GLsizeip
 		if (gOptions->FixBadFlushBufferRangeArgs) {
 			length = mMapSize;
 		}
-		Once(TraceWarn("Application issued glFlushMappedBufferRange with offset and length == 0--likely application bug."));
+		Once(TraceWarn(TC("Application issued glFlushMappedBufferRange with offset and length == 0--likely application bug.")));
 	} 
 
 	// Need to copy into our own version for consistency, and to the driver's copy because otherwise the 

@@ -126,15 +126,26 @@ inline char* AllocateAndCopy(const char* _src)
 	return retVal;
 }
 
-inline TCHAR* AllocateAndCopy(const TCHAR* _src)
+inline wchar_t* AllocateAndCopy(const wchar_t* _src)
 {
-	size_t bufferSize = 1 + _tcslen(_src);
+	size_t bufferSize = 1 + wcslen(_src);
 	
-	TCHAR* retVal = new TCHAR[bufferSize];
-	_tcscpy_s(retVal, bufferSize, _src);
+	wchar_t* retVal = new wchar_t[bufferSize];
+	wcscpy_s(retVal, bufferSize, _src);
 
 	return retVal;
 }
+
+inline TCHAR* AllocateAndCopyN(const TCHAR* _src, int _count)
+{
+	size_t bufferSize = 1 + _count;
+	
+	TCHAR* retVal = new TCHAR[bufferSize];
+	_tcsncpy_s(retVal, bufferSize, _src, _count);
+
+	return retVal;
+}
+
 
 inline void CHECK_GL_ERROR()
 {

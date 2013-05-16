@@ -123,7 +123,7 @@ bool InitGL(HDC dc)
         return false;
 
 	if (!ResolveExtensions()) {
-		printf("Some extensions could not be initialized--playback may be incorrect.\n");
+		LogWarn(TC("Some extensions could not be initialized--playback may be incorrect."));
 	}
 
 	return true;
@@ -138,7 +138,7 @@ int CALLBACK WinMain(
 {
     gHwnd = InitWindow();
     if (gHwnd == NULL) {
-        printf("Failed to create window...\n");
+        LogError(TC("Failed to create window..."));
         return 1;
     }
 
@@ -146,7 +146,7 @@ int CALLBACK WinMain(
 
     bool success = InitGL(dc);
     if (!success) {
-        printf("Failed to initialize OpenGL...\n");
+        LogError(TC("Failed to initialize OpenGL..."));
         return 1;
     }
 

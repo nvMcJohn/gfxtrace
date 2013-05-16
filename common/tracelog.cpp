@@ -35,17 +35,21 @@
 #include "functionhooks.gen.h"
 
 // Unfortunately, has to be stored as a global because GL is a C API. Boo hoo.
-std::list<std::pair<TraceLogLevel, std::vector<char>>> mMessages;
+std::list<std::pair<TraceLogLevel, std::vector<TCHAR>>> mMessages;
 
-void TraceGuts(TraceLogLevel _level, const char* _fmt, va_list _args)
+void TraceGuts(TraceLogLevel _level, bool _log, const TCHAR* _fmt, va_list _args)
 {
 	// Doh, this is MS specific. Need a WAR for other platforms.
-	size_t requiredLength = _vscprintf(_fmt, _args) + 1;
+	size_t requiredLength = _vsctprintf(_fmt, _args) + 1;
 
-	std::vector<char> buffer(requiredLength);
-	vsnprintf_s(&buffer[0], requiredLength, requiredLength - 1, _fmt, _args);
+	std::vector<TCHAR> buffer(requiredLength);
+	_vsntprintf_s(&buffer[0], requiredLength, requiredLength - 1, _fmt, _args);
 
-	mMessages.push_back(std::make_pair(_level, buffer));
+    if (_log) {
+        PrintTraceMessage(_level, &(*buffer.begin()));
+    } else {
+	    mMessages.push_back(std::make_pair(_level, buffer));
+    }
 }
 
 void WriteMessages(FileLike* _out)
@@ -62,53 +66,84 @@ void WriteMessages(FileLike* _out)
 	mMessages.clear();
 }
 
-void TraceVerbose(const char* fmt, ...)
+void TraceVerbose(const TCHAR* fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
-	TraceGuts(TLLVerbose, fmt, args);
+	TraceGuts(TLLVerbose, false, fmt, args);
 	va_end(args);
 }
 
-void TraceLog(const char* fmt, ...)
+void TraceInfo(const TCHAR* fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
-	TraceGuts(TLLLog, fmt, args);
+	TraceGuts(TLLInfo, false, fmt, args);
 	va_end(args);
 }
 
-void TraceWarn(const char* fmt, ...)
+void TraceWarn(const TCHAR* fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
-	TraceGuts(TLLWarn, fmt, args);
+	TraceGuts(TLLWarn, false, fmt, args);
 	va_end(args);
 }
 
-void TraceError(const char* fmt, ...)
+void TraceError(const TCHAR* fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
-	TraceGuts(TLLError, fmt, args);
+	TraceGuts(TLLError, false, fmt, args);
 	va_end(args);
 }
 
+void LogVerbose(const TCHAR* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	TraceGuts(TLLVerbose, true, fmt, args);
+	va_end(args);
+}
+
+void LogInfo(const TCHAR* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	TraceGuts(TLLVerbose, true, fmt, args);
+	va_end(args);
+}
+
+void LogWarn(const TCHAR* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	TraceGuts(TLLVerbose, true, fmt, args);
+	va_end(args);
+}
+
+void LogError(const TCHAR* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	TraceGuts(TLLVerbose, true, fmt, args);
+	va_end(args);
+}
 
 // To display the trace messages to stdout.
-void PrintTraceMessage(int _level, const char* _body)
+void PrintTraceMessage(int _level, const TCHAR* _body)
 {
-	const char* levelHeader = "Unknown";
+	const TCHAR* levelHeader = TC("Unknown");
 	switch (_level) 
 	{
-		case TLLVerbose: levelHeader = "Verbose"; break;
-		case TLLLog: levelHeader = "Log"; break;
-		case TLLWarn: levelHeader = "Warning"; break;
-		case TLLError: levelHeader = "ERROR"; break;
+		case TLLVerbose: levelHeader = TC("Verbose"); break;
+		case TLLInfo: levelHeader = TC("Info"); break;
+		case TLLWarn: levelHeader = TC("Warning"); break;
+		case TLLError: levelHeader = TC("ERROR"); break;
 		default:
 			assert(0);
 			break;
 	};
 
-	printf("%s: %s\n", levelHeader, _body);
+	_tprintf(TC("%s: %s\n"), levelHeader, _body);
 }

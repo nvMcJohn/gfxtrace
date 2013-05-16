@@ -192,7 +192,7 @@ class GLFunction:
                     lines.append("\treturn retVal;")
             else:
                 lines.append("\t// Unsupported function, Error once.")
-                lines.append('\tOnce(TraceError("%s was called, but is unsupported by glTrace--please update the trace tool."));' % callName)
+                lines.append('\tOnce(TraceError(TC("%s was called, but is unsupported by glTrace--please update the trace tool.")));' % callName)
                 if self.returnType != "void":
                     lines.append("\treturn retVal;")
 
@@ -472,7 +472,7 @@ def generateHeader(allMembers, allClasses, cmdLine):
         if not member.supported:
             continue
         lines.append("\t\t%s;" % member.asSerializeStruct(True))
-    lines.append("\t\tstruct { int level; char* messageBody; } mData_Message;")
+    lines.append("\t\tstruct { int level; TCHAR* messageBody; } mData_Message;")
     lines.append("\t};")
     lines.append("")
     for member in allMembers:
@@ -672,7 +672,7 @@ def generateCpp(allMembers, allClasses, cmdLine):
     lines.append("\t\t\tvoid* newBuffer = malloc(toStreamSize);")
     lines.append("\t\t\tassert(newBuffer != 0);")
     lines.append("\t\t\t_in->ReadRaw(newBuffer, toStreamSize);")
-    lines.append("\t\t\tmData_Message.messageBody = (char*)newBuffer;")
+    lines.append("\t\t\tmData_Message.messageBody = (TCHAR*)newBuffer;")
     lines.append("\t\t\tbreak;")
     lines.append("\t\t}")
     lines.append("")
@@ -716,7 +716,7 @@ def generateCpp(allMembers, allClasses, cmdLine):
             lines.append("")
     lines.append("\t\tcase EST_Message:")
     lines.append("\t\t{")
-    lines.append("\t\t\ttmpPkt.mData_Message.messageBody = (char*)(strlen(mData_Message.messageBody) + 1);")
+    lines.append("\t\t\ttmpPkt.mData_Message.messageBody = (TCHAR*)(sizeof(TCHAR) * (_tcslen(mData_Message.messageBody) + 1));")
     lines.append("\t\t\t_out->WriteRaw(&tmpPkt, sizeof(tmpPkt));")
     lines.append("\t\t\t_out->WriteRaw(mData_Message.messageBody, (size_t)tmpPkt.mData_Message.messageBody);")
     lines.append("\t\t\tbreak;")
@@ -884,7 +884,7 @@ def generateCpp(allMembers, allClasses, cmdLine):
                             lines.append("\t\tmData_%s.%s = %s;" % (member.name, arg.name, arg.name))
                             lines.append("\t\tmData_%s.%s = false;" % (member.name, arg.pointerOrOffsetName))
                         else:
-                            lines.append('\t\tOnce(TraceWarn("Unable to determine pointer length for argument %s in method %s. Probably a trace bug."));' % (arg.name, member.name))
+                            lines.append('\t\tOnce(TraceWarn(TC("Unable to determine pointer length for argument %s in method %s. Probably a trace bug.")));' % (arg.name, member.name))
                         lines.append("\t}")
                     else:
                         lines.append("\tmData_%s.%s = %s;" % (member.name, arg.name, arg.name))

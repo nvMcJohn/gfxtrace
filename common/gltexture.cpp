@@ -744,11 +744,11 @@ void GLTexture::glCompressedTexImage2D(ContextState* _ctxState, GLenum target, G
 				memcpy(ourCopy, data, bufferLength);
 			} else {
 				assert(ourCopy && "glTexImage2D memory creation failed.");
-				TraceError("Attempting to create texture buffer of length %d failed in '%s'.", bufferLength, "glCompressedTexImage2D");
+				TraceError(TC("Attempting to create texture buffer of length %d failed in '%s'."), bufferLength, "glCompressedTexImage2D");
 			}
 		} else {
 			assert(!"Couldn't determine pointer size from args, which is hilarious because it was given to us.");
-			TraceError("This bug will almost certainly be embarassing.");
+			TraceError(TC("This bug will almost certainly be embarassing."));
 		}
 	}
 
@@ -793,11 +793,11 @@ void GLTexture::glTexImage2D(ContextState* _ctxState, GLenum target, GLint level
 				memcpy(ourCopy, pixels, bufferLength);
 			} else {
 				assert(ourCopy && "glTexImage2D memory creation failed.");
-				TraceError("Attempting to create texture buffer of length %d failed in '%s'.", bufferLength, "glTexImage2D");
+				TraceError(TC("Attempting to create texture buffer of length %d failed in '%s'."), bufferLength, "glTexImage2D");
 			}
 		} else {
 			assert(!"Couldn't determine pointer size from args.");
-			TraceError("glTexImage2D was given args that my primitive man-brain couldn't understand. A debugger will need to be attached to find the right buffer size.");
+			TraceError(TC("glTexImage2D was given args that my primitive man-brain couldn't understand. A debugger will need to be attached to find the right buffer size."));
 		}
 	}
 
@@ -835,11 +835,11 @@ void GLTexture::glTexImage3D(ContextState* _ctxState, GLenum target, GLint level
 				memcpy(ourCopy, data, bufferLength);
 			} else {
 				assert(ourCopy && "glTexImage3D memory creation failed.");
-				TraceError("Attempting to create texture buffer of length %d failed in '%s'.", bufferLength, "glTexImage3D");
+				TraceError(TC("Attempting to create texture buffer of length %d failed in '%s'."), bufferLength, "glTexImage3D");
 			}
 		} else {
 			assert(!"Couldn't determine pointer size from args.");
-			TraceError("glTexImage3D was given args that my primitive man-brain couldn't understand. A debugger will need to be attached to find the right buffer size.");
+			TraceError(TC("glTexImage3D was given args that my primitive man-brain couldn't understand. A debugger will need to be attached to find the right buffer size."));
 		}
 	}
 
@@ -878,11 +878,11 @@ void GLTexture::glTexSubImage2D(ContextState* _ctxState, GLenum target, GLint le
 				memcpy(ourCopy, pixels, bufferLength);
 			} else {
 				assert(ourCopy && "glTexImage2D memory creation failed.");
-				TraceError("Attempting to create texture buffer of length %d failed in '%s'.", bufferLength, "glTexSubImage2D");
+				TraceError(TC("Attempting to create texture buffer of length %d failed in '%s'."), bufferLength, "glTexSubImage2D");
 			}
 		} else {
 			assert(!"Couldn't determine pointer size from args.");
-			TraceError("glTexSubImage2D was given args that my primitive man-brain couldn't understand. A debugger will need to be attached to find the right buffer size.");
+			TraceError(TC("glTexSubImage2D was given args that my primitive man-brain couldn't understand. A debugger will need to be attached to find the right buffer size."));
 		}
 	}
 

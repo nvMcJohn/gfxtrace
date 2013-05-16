@@ -86,7 +86,7 @@ void MessageStream::SetupSocket()
 	if (mHost) {
 		SetupHostSocket();
 	} else {
-		SetupServerSocket();
+		SetupClientSocket();
 	}
 }
 
@@ -103,18 +103,21 @@ void MessageStream::SetupHostSocket()
 
 	hr = getaddrinfo(NULL, mPort.c_str(), &hostAddrInfo, &mHostAddressInfo);
 	if (hr != 0) {
+        LogVerbose(TC("Host: Failed getaddrinfo"));
 		throw 1;
 	}
 
 	SOCKET listenSocket = socket(mHostAddressInfo->ai_family, mHostAddressInfo->ai_socktype, mHostAddressInfo->ai_protocol);
 	if (listenSocket == INVALID_SOCKET) {
 		// TODO: Figure out errors
+        LogVerbose(TC("Host: Failed creating a listen socket"));
 		SafeDelete(mHostAddressInfo);
 		throw 2;
 	}
 
 	hr = bind(listenSocket, mHostAddressInfo->ai_addr, (int)mHostAddressInfo->ai_addrlen);
 	if (hr == SOCKET_ERROR) {
+        LogVerbose(TC("Host: Failed binding socket"));
 		SafeDelete(mHostAddressInfo);
 		closesocket(listenSocket);
 		throw 3;
@@ -125,6 +128,7 @@ void MessageStream::SetupHostSocket()
 
 	hr = listen(listenSocket, 1);
 	if (hr == SOCKET_ERROR) {
+        LogVerbose(TC("Host: Failed listening on socket"));
 		closesocket(listenSocket);
 		throw 4;
 	}
@@ -134,6 +138,7 @@ void MessageStream::SetupHostSocket()
 	closesocket(listenSocket);
 
 	if (mSocket == INVALID_SOCKET) {
+        LogVerbose(TC("Host: Failed accepting socket connection"));
 		throw 5;
 	}
 
@@ -143,7 +148,7 @@ void MessageStream::SetupHostSocket()
 }
 
 // ------------------------------------------------------------------------------------------------
-void MessageStream::SetupServerSocket()
+void MessageStream::SetupClientSocket()
 {
 	int hr = 0;
 	struct addrinfo hostAddrInfo = { 0 },
@@ -155,6 +160,7 @@ void MessageStream::SetupServerSocket()
 
 	hr = getaddrinfo(mAddress.c_str(), mPort.c_str(), &hostAddrInfo, &mHostAddressInfo);
 	if (hr != 0) {
+        LogVerbose(TC("Client: Failed getaddrinfo"));
 		throw 1;
 	}
 
@@ -163,6 +169,7 @@ void MessageStream::SetupServerSocket()
 		
 		hr = connect(mSocket, currentAttempt->ai_addr, currentAttempt->ai_addrlen);
 		if (hr == SOCKET_ERROR) {
+            LogVerbose(TC("Client: Failed connect. Possibly non-fatal."));
 			closesocket(mSocket);
 			mSocket = INVALID_SOCKET;
 			continue;
@@ -174,6 +181,7 @@ void MessageStream::SetupServerSocket()
 	SafeDelete(mHostAddressInfo);
 
 	if (mSocket == INVALID_SOCKET) {
+        LogVerbose(TC("Client: Couldn't find any connections. We're gonna crash."));
 		throw 2;
     }
 

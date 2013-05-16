@@ -129,7 +129,7 @@ private:
 	void SetupHostSocket();
 	// Server is eztrace.exe--but note that eztrace actually connects to the host (to avoid having to 
 	// communicate anything to the host ahead of time).
-	void SetupServerSocket();
+	void SetupClientSocket();
 
 	void Handshake();
 

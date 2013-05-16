@@ -31,22 +31,29 @@
 enum TraceLogLevel
 {
 	TLLVerbose = 0,
-	TLLLog,
+	TLLInfo,
 	TLLWarn,
 	TLLError
 };
 
 // Inserts log of the appropriate level into the trace so it can be displayed later.
-void TraceVerbose(const char* fmt, ...);
-void TraceLog(const char* fmt, ...);
-void TraceWarn(const char* fmt, ...);
-void TraceError(const char* fmt, ...);
+void TraceVerbose(const TCHAR* fmt, ...);
+void TraceInfo(const TCHAR* fmt, ...);
+void TraceWarn(const TCHAR* fmt, ...);
+void TraceError(const TCHAR* fmt, ...);
+
+// These messages are displayed to stdout. During capture, Log messages should only be 
+// emitted by eztrace--any logging from the tracee should come in the form of Trace*, above.
+void LogVerbose(const TCHAR* fmt, ...);
+void LogInfo(const TCHAR* fmt, ...);
+void LogWarn(const TCHAR* fmt, ...);
+void LogError(const TCHAR* fmt, ...);
 
 // Note: Writes out messages, then frees up the associated memory.
 void WriteMessages(FileLike* _out);
 
 // To display the trace messages to stdout.
-void PrintTraceMessage(int _level, const char* _body);
+void PrintTraceMessage(int _level, const TCHAR* _body);
 
 #define Once(_call) \
 	do { \

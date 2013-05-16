@@ -464,7 +464,7 @@ void GLProgramARB::glProgramStringARB(GLenum target, GLenum format, GLsizei len,
 	assert(CheckAndSetTarget(target));
 
 	if (format != GL_PROGRAM_FORMAT_ASCII_ARB) {
-		Once(TraceError("App is using glProgramStringARB with format != GL_PROGRAM_FORMAT_ASCII_ARB, which isn't currently handled."));
+		Once(TraceError(TC("App is using glProgramStringARB with format != GL_PROGRAM_FORMAT_ASCII_ARB, which isn't currently handled.")));
 		return;
 	}
 

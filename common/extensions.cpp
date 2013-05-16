@@ -87,7 +87,7 @@ bool ResolveExtensions()
 	#define REQUIRE_GL_EXT(_spec, _name) \
 		_name = (_spec) wglGetProcAddress(STR(_name)); \
 		if (_name == NULL) { \
-			printf("Unable to find extension %s", STR(_name)); \
+			LogError(TC("Unable to find extension %s"), STR(_name)); \
 		} \
 		allResolved = allResolved && _name != NULL;
 	#include "extensions.gl"

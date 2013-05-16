@@ -134,6 +134,7 @@ void Process::SpawnInjectedProcess()
     if (!CreateProcess(fullExePath, mProcessArgs, NULL, NULL, TRUE, 
                        processCreateFlags, NULL, mWorkingDirectory,  
                        &si, &mProcessInfo)) {
+        LogError(TC("Failed to inject ourselves into target process--couldn't spawn target process."));
         throw GetLastError();
     }
 
@@ -141,11 +142,13 @@ void Process::SpawnInjectedProcess()
     // This is wasteful, but whatevs.
     void* targetProcessMem = VirtualAllocEx(mProcessInfo.hProcess, 0, byteCount, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
     if (!targetProcessMem) {
+        LogError(TC("Failed to inject ourselves into target process--couldn't allocate process memory."));
         throw 9;
     }
 
     SIZE_T bytesWritten = 0;
     if (!WriteProcessMemory(mProcessInfo.hProcess, targetProcessMem, mInceptionDllPath, byteCount, &bytesWritten)) {
+        LogError(TC("Failed to inject ourselves into target process--couldn't write inception DLL name into process."));
         throw bytesWritten;
     }
 
@@ -153,6 +156,7 @@ void Process::SpawnInjectedProcess()
                                               targetProcessMem, 0, NULL);
 
     if (!hRemoteThread) {
+        LogError(TC("Failed to inject ourselves into target process--couldn't spawn thread."));
         throw GetLastError();
     }
 }
@@ -162,9 +166,12 @@ void Process::Thread_Watchdog()
 {
 	while (WaitForSingleObject(mProcessInfo.hProcess, kPollTime) == WAIT_TIMEOUT) {
 		if (mServerRequestsTermination) {
+            LogInfo(TC("EZTrace has requested exit."));
 			return;
 		}
 	}
+
+    LogInfo(TC("Child Process has terminated."));
 
 	PostThreadMessage(mParentThreadId, WM_QUIT, 0, 0);
 }
@@ -198,18 +205,18 @@ void Process::Thread_CaptureTrace()
 		mOutputTrace->Reset();
 
 		mOutputTrace->ReadContextState(&fileLikeSocket);
-		printf("Received Context State!\n");
+		LogInfo(TC("Received Context State!"));
 
 		// TODO: Make this async again. 
 		fileLikeSocket.Read(Checkpoint("FrameCommandsBegin"));
-		printf("Beginning to collect frame commands...\n");
+		LogInfo(TC("Beginning to collect frame commands..."));
 		// TODO: Receive the rest of the trace here!
 		while (1) {
 			SSerializeDataPacket pkt;
 			fileLikeSocket.Read(&pkt);
 
 			if (lastPacketCommand != (size_t)-1 && pkt.mPacketId != lastPacketCommand + 1) {
-				printf("ERROR: We went out of sync with the application.\n");
+				LogError(TC("We went out of sync with the application."));
 				throw 8;
 			}
 
@@ -226,7 +233,7 @@ void Process::Thread_CaptureTrace()
 
 			// Once we get the sentinel, let's bail.
 			if (pkt.mDataType == EST_Sentinel) {
-				printf("Received %d frame commands\n", frameCommandCount);
+				LogInfo(TC("Received %d frame commands"), frameCommandCount);
 				break;
 			}
 		}
@@ -234,10 +241,9 @@ void Process::Thread_CaptureTrace()
 		fileLikeSocket.Read(Checkpoint("FrameCommandsEnd"));
 		fileLikeSocket.Read(Checkpoint("TraceCapturingEnd"));
 
-		// TODO: get from command line options.
-		_tprintf(TC("Saving capture to %s...\n"), mOutputTraceName);
+		LogInfo(TC("Saving capture to %s..."), mOutputTraceName);
 		mOutputTrace->Save(mOutputTraceName);
 
-		printf("Frame successfully transfered.\n");
+		LogInfo(TC("Frame successfully transfered."));
 	}
 }
