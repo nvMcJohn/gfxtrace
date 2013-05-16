@@ -64,7 +64,7 @@ DWORD WINAPI Process_RunCaptureTraceThread(LPVOID _processPtr)
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-Process::Process(const TCHAR* _exeName, const TCHAR* _processArgs, const TCHAR* _workingDirectory, const char* _inceptionDllPath, GLTrace* _outTrace, const TCHAR* _outTraceFilename)
+Process::Process(const TCHAR* _exeName, const TCHAR* _processArgs, const TCHAR* _workingDirectory, const TCHAR* _inceptionDllPath, GLTrace* _outTrace, const TCHAR* _outTraceFilename)
 : mOutputTrace(_outTrace)
 , mExeName(NULL)
 , mProcessArgs(NULL)
@@ -138,7 +138,7 @@ void Process::SpawnInjectedProcess()
         throw GetLastError();
     }
 
-    size_t byteCount = strlen(mInceptionDllPath) + 1;
+    size_t byteCount = sizeof(TCHAR) * (_tcslen(mInceptionDllPath) + 1);
     // This is wasteful, but whatevs.
     void* targetProcessMem = VirtualAllocEx(mProcessInfo.hProcess, 0, byteCount, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
     if (!targetProcessMem) {
@@ -152,7 +152,7 @@ void Process::SpawnInjectedProcess()
         throw bytesWritten;
     }
 
-    HANDLE hRemoteThread = CreateRemoteThread(mProcessInfo.hProcess, NULL, 0, (LPTHREAD_START_ROUTINE) LoadLibraryA, 
+    HANDLE hRemoteThread = CreateRemoteThread(mProcessInfo.hProcess, NULL, 0, (LPTHREAD_START_ROUTINE) LoadLibrary, 
                                               targetProcessMem, 0, NULL);
 
     if (!hRemoteThread) {

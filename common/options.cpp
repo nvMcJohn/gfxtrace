@@ -31,6 +31,47 @@
 
 Options* gOptions = NULL;
 
+#ifdef _UNICODE
+    typedef std::wstring tstring;
+#else
+    typedef std::string tstring;
+#endif
+
+// ------------------------------------------------------------------------------------------------
+tstring dirname(const tstring& _path)
+{
+    // These functions actually work on const strings, but the C decl version exposed by the macro 
+    // takes non-const TCHAR*.
+    TCHAR* pathSepBack = _tcsrchr(const_cast<TCHAR*>(_path.c_str()), TC('\\'));
+    TCHAR* pathSepFor = _tcsrchr(const_cast<TCHAR*>(_path.c_str()), TC('/'));
+    TCHAR* lastPathSep = pathSepBack > pathSepFor ? pathSepBack : pathSepFor;
+
+    if (!lastPathSep) {
+        return tstring(TC(".\\"));
+    }
+
+    return tstring(_path.c_str(), lastPathSep);
+}
+
+// ------------------------------------------------------------------------------------------------
+tstring join(const tstring& _pathA, const tstring& _pathB)
+{
+    return _pathA + TC("/") + _pathB;
+}
+
+// ------------------------------------------------------------------------------------------------
+tstring abspath(const tstring& _path)
+{
+#if _WIN32
+    TCHAR tmpPath[_MAX_PATH + 1];
+    GetFullPathName(_path.c_str(), _MAX_PATH, tmpPath, NULL);
+    tstring retVal = tmpPath;
+    return retVal;
+#else
+    static_assert(0, "abspath needs to be implemented for unknown platform.");
+#endif
+}
+
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
@@ -96,12 +137,6 @@ Options::Options()
 	// Set defaults.
 	OutputTraceName = _tcsdup(TC("trace.gft"));
 	
-#ifdef _DEBUG
-	GetFullPathNameA("..\\Debug\\inception.dll", ARRAYSIZE(InceptionDllPath), InceptionDllPath, NULL);
-#else
-	GetFullPathNameA("..\\Release\\inception.dll", ARRAYSIZE(InceptionDllPath), InceptionDllPath, NULL);
-#endif
-
 	ServerPort = 65536 - 31337;
 
 	CaptureAllTextures = true;
@@ -115,19 +150,24 @@ Options::~Options()
 	SafeDeleteArray(ExeName);
 	SafeDeleteArray(WorkingDirectory);
 	SafeDeleteArray(ProcessArgs);
+    SafeDeleteArray(InceptionDllPath);
 }
 
 // ------------------------------------------------------------------------------------------------
 Options* ParseCommandLine(int argc, TCHAR *argv[])
 {
-    if (argc == 1) {
+    if (argc <= 1) {
         PrintHelp();
         exit(1);
     }
 
 	Options* retVal = new Options;
+
+    // The dll to be injected (inception.dll) is located right next to the executable, which is 
+    // argv[0]. Grab the directory portion of that.
+    retVal->InceptionDllPath = AllocateAndCopy(abspath(join(dirname(argv[0]), TC("inception.dll"))).c_str());
+
     int eztraceArgsEnd = 0;
-    
     for (int i = 1; i < argc; ) {
         int consumed = 0;
         
@@ -167,16 +207,7 @@ Options* ParseCommandLine(int argc, TCHAR *argv[])
     } else {
         if (retVal->WorkingDirectory == NULL) {
             LogInfo(TC("No working directory specified, assuming executable's path."));
-            TCHAR* pathSepBack = _tcsrchr(retVal->ExeName, TC('\\'));
-            TCHAR* pathSepFor = _tcsrchr(retVal->ExeName, TC('/'));
-
-            TCHAR* lastPathSep = pathSepBack > pathSepFor ? pathSepBack : pathSepFor;
-            if (lastPathSep == NULL) {
-                // If we couldn't find a path separator, we're in current directory.
-                retVal->WorkingDirectory = _tcsdup(TC(".\\"));
-            } else {
-                retVal->WorkingDirectory = AllocateAndCopyN(retVal->ExeName, lastPathSep - retVal->ExeName);
-            }
+            retVal->WorkingDirectory = AllocateAndCopy(dirname(retVal->ExeName).c_str());
         }
     }
     LogInfo(TC("Args to be passed to child process: '%s'"), retVal->ProcessArgs);
