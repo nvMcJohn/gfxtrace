@@ -119,25 +119,31 @@ def parseSpecFile(fileObj):
 # -------------------------------------------------------------------------------------------------
 def getOrFetch(localCache, remoteURL, useCache):
     if useCache:
+        # Create the cache next to this module so that multiple users of the 
+        # module all get the same cache file.
+        cacheFilename = os.path.join(os.path.dirname(__file__), localCache)
+
         try:
-            return open(localCache, "rb")
+            return open(cacheFilename, "rb")
         except IOError:
             fileContents = urllib2.urlopen(remoteURL).read()
             try:
-                open(localCache, "wb").write(fileContents)
-                return open(localCache, "rb")
+                open(cacheFilename, "wb").write(fileContents)
+                return open(cacheFilename, "rb")
             except IOError:
                 pass
 
     return urllib2.urlopen(remoteURL)
 
 # -------------------------------------------------------------------------------------------------
-def getSpecData(useCache):
+def getSpecData(useCache, filterFunc=None):
     typemapFile = getOrFetch(kTypemapLocal, kTypemapURL, useCache)
     specFile = getOrFetch(kSpecFileLocal, kSpecFileURL, useCache)
 
     typemapDict = parseTypemap(typemapFile)
     spec = parseSpecFile(specFile)
+    if filter is not None:
+        spec = { k: v for (k, v) in spec.iteritems() if filterFunc(v) }
 
     for ep in spec.itervalues():
         ep.ResolveTypes(typemapDict)
@@ -146,8 +152,8 @@ def getSpecData(useCache):
     return returnDict
 
 # -------------------------------------------------------------------------------------------------
-def getEntryPoints(useCache):
-    return getSpecData(useCache)["spec"]
+def getEntryPoints(useCache, filterFunc=None):
+    return getSpecData(useCache, filterFunc)["spec"]
 
 # -------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------

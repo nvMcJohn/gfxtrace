@@ -4,6 +4,9 @@ kParamTypeValues = ( "array", "value", "reference" )
 
 kCallingConvention = "APIENTRY"
 
+# -------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 def tupleAsCDataDecl(tpl):
     assert(len(tpl) >= 2)
 
@@ -52,7 +55,6 @@ class Parameter(object):
     # Codegen things here.
     # ---------------------------------------------------------------------------------------------
     # ---------------------------------------------------------------------------------------------
-
     def asCtype(self):
         if self.paramType == "value":
             return self.realType
@@ -126,17 +128,31 @@ class EntryPoint(object):
             return retList
         assert(0)
 
-    def asGlName(self):
+    def asGlName(self, prefix=None):
+        if prefix:
+            return "%s_gl%s" % (prefix, self.name)
         return "gl%s" % self.name
 
     def asFunction(self, isDeclaration):
         if isDeclaration:
             return self.__funcDeclaration("")
         assert(0)
+
     def asHookFunction(self, isDeclaration):
         if isDeclaration:
             return self.__funcDeclaration("hook_", kCallingConvention)
         assert(0)
+
+    def asFunctionPointer(self, qualifier=None, callingConvention=None, prefix=None, initialValue=None):
+        qualifier = "" if qualifier is None else ("%s " % qualifier)
+        callingConvention = "" if callingConvention is None else ("%s " % callingConvention)
+        prefix = "" if prefix is None else ("%s_" % prefix)
+        funcName = "%s%s" % (prefix, self.asGlName())
+        initialValue = "" if initialValue is None else (" = %s" % initialValue)
+
+        argsStr = ", ".join([self.params[arg].asDeclaration() for arg in self.args])
+        
+        return "%s%s (%s*%s)(%s)%s;" % (qualifier, self.returnType.asCtype(), callingConvention, funcName, argsStr, initialValue)
 
     def asPointerToFunction(self, isDeclaration):
         qualifier = "" if self.requiresPublicReal else "static "
@@ -146,7 +162,7 @@ class EntryPoint(object):
         
         argsStr = ", ".join([self.params[arg].asDeclaration() for arg in self.args])
         if isDeclaration:
-            return "%s%s (%s * %s)(%s) = %s;" % (qualifier, self.returnType.asCtype(), kCallingConvention, self.asRealPointerName(), argsStr, initialVal)
+            return "%s%s (%s *%s)(%s) = %s;" % (qualifier, self.returnType.asCtype(), kCallingConvention, self.asRealPointerName(), argsStr, initialVal)
         assert(0)
 
     def asRealPointerName(self):
@@ -161,7 +177,6 @@ class EntryPoint(object):
 
     def __str__(self):
         return "%s(%s)" % (self.name, ",".join(self.args))
-
     __repr__ = __str__
 
 # -------------------------------------------------------------------------------------------------

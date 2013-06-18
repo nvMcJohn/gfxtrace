@@ -20,9 +20,6 @@ def __generateCode(allEntryPoints, functionForwardingTable, typemap):
     retVal["pointerHelpers"] = __generatePointerHelpers(allEntryPoints, functionForwardingTable, typemap)
     retVal["objects"] = __generateObjects(allEntryPoints, functionForwardingTable, typemap)
 
-    print "\n".join(retVal["objects"]["decl"])
-    print "\n".join(retVal["objects"]["defn"])
-
     return retVal
 
 # -------------------------------------------------------------------------------------------------
@@ -123,9 +120,5 @@ def __generateObjects(allEntryPoints, functionForwardingTable, typemap):
         retDict["defn"].append("\tManualConstruct();")
         retDict["defn"].append("}")
 
-        
     return retDict
         
-
-
-
